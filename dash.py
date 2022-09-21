@@ -35,6 +35,12 @@ save_pd_as_csv(data, 'describe')
 #check_variable_types(data)
 #check_missing_values(data)
 #generate_granularity_single(data)
-granularity_study_bins(data)
+#granularity_study_bins(data)
+#generate_boxplots(data)
+#generate_outliers_plot(data)
+
+data_no_outliers = remove_outliers(data)
+print(f'[!] Original dataset shape: {data.shape}')
+print(f'[!] Data shape with no outliers: {data_no_outliers.shape}')
 
 print("[!] Done.")
