@@ -2,7 +2,9 @@
 # Dependancies setup
 #
 
+from lib.classification import perform_knn_analysis, perform_naive_bayes_analysis, split_train_test_sets
 from lib.config.config import *
+from lib.data_preparation import check_data_balancing, equal_frequency_descretization, equal_width_descretization, perform_minmax_scaling, perform_oversample, perform_smote, perform_standard_scaling, perform_undersample
 from lib.data_profiling import *
 import pandas as pd
 from numpy import log
@@ -39,8 +41,41 @@ save_pd_as_csv(data, 'describe')
 #generate_boxplots(data)
 #generate_outliers_plot(data)
 
-data_no_outliers = remove_outliers(data)
-print(f'[!] Original dataset shape: {data.shape}')
-print(f'[!] Data shape with no outliers: {data_no_outliers.shape}')
+#
+# Data preparation
+#
 
-print("[!] Done.")
+#data_no_outliers = remove_outliers(data)
+#print(f'[!] Original dataset shape: {data.shape}')
+#print(f'[!] Data shape with no outliers: {data_no_outliers.shape}')
+
+normalized_data_zscore = perform_standard_scaling(data)
+save_pd_as_csv(normalized_data_zscore.describe(), "describe_normalized_zenscore")
+
+#normalized_data_minmax = perform_minmax_scaling(data)
+#save_pd_as_csv(normalized_data_minmax.describe(), "describe_normalized_minmax")
+
+# generating plot for comparing the normalization algorithms
+# fig, axs = subplots(1, 3, figsize=(100,50),squeeze=False)
+# axs[0, 0].set_title('Original data')
+# data.boxplot(ax=axs[0, 0])
+# axs[0, 1].set_title('Z-score normalization')
+# normalized_data_zscore.boxplot(ax=axs[0, 1])
+# axs[0, 2].set_title('MinMax normalization')
+# normalized_data_minmax.boxplot(ax=axs[0, 2])
+# savefig('./output/images/boxplot_normalized_data_with_no_outliers.png')
+
+#check_data_balancing(normalized_data_zscore, 'Bankrupt?')
+#undersampled_data = perform_undersample(normalized_data_zscore, 'Bankrupt?')
+#oversampled_data = perform_oversample(normalized_data_zscore, 'Bankrupt?')
+#smote_data = perform_smote(normalized_data_zscore, 'Bankrupt?')
+
+#equal_width_data = equal_width_descretization(data)
+#equal_freq_data = equal_frequency_descretization(data)
+
+split_train_test_sets(data, 'taiwan', 'Bankrupt?')
+perform_naive_bayes_analysis('taiwan', 'Bankrupt?')
+perform_knn_analysis('taiwan', 'Bankrupt?')
+
+
+print("[!] Done :)")

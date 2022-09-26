@@ -1,8 +1,7 @@
-from lib.config.ds_charts import bar_chart, get_variable_types, choose_grid, HEIGHT, multiple_line_chart
-from matplotlib.pyplot import figure, savefig, subplots, Axes, title
+from lib.config.ds_charts import bar_chart, get_variable_types
+from matplotlib.pyplot import figure, savefig, subplots
 from lib.utils import *
 import numpy as np
-
 
 def get_numeric_variables(data):
     return get_variable_types(data)['Numeric']
