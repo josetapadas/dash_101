@@ -52,8 +52,28 @@ save_pd_as_csv(data, 'describe')
 normalized_data_zscore = perform_standard_scaling(data)
 save_pd_as_csv(normalized_data_zscore.describe(), "describe_normalized_zenscore")
 
-#normalized_data_minmax = perform_minmax_scaling(data)
-#save_pd_as_csv(normalized_data_minmax.describe(), "describe_normalized_minmax")
+normalized_data_minmax = perform_minmax_scaling(normalized_data_zscore)
+# restora a coluna 'Bankrupt?' do dataset original
+normalized_data_minmax['Bankrupt?'] = data['Bankrupt?']
+
+save_pd_as_csv(normalized_data_minmax.describe(), "describe_normalized_minmax")
+
+# função que dropa uma coluna com base no (X-index)
+def drop_column_at_position(data, index):
+    new_data = data
+    new_data.drop(new_data.columns[index - 1], axis = 1, inplace = True)
+    return new_data
+  
+novo_data_set_sem_x1 = drop_column_at_position(normalized_data_minmax, 1)
+print(novo_data_set_sem_x1.head())
+
+# função que dropa uma lista de colunsa com base no array de indices (X-index)
+def drop_columns_at_position(data, array_of_indices):
+    new_data = data
+    new_data.drop(new_data.columns[array_of_indices], axis = 1, inplace = True)
+    return new_data
+sem_varios = drop_column_at_position(normalized_data_minmax, np.array([1, 3, 4]))
+print(sem_varios.head())
 
 # generating plot for comparing the normalization algorithms
 # fig, axs = subplots(1, 3, figsize=(100,50),squeeze=False)
