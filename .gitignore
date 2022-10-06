@@ -1,1 +1,3 @@
-output
+*.pyc
+output/**/*.png
+output/**/*.csv
