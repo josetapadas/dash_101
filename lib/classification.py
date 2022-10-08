@@ -7,7 +7,7 @@ from matplotlib.pyplot import figure, savefig, subplots, Axes, title
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, CategoricalNB
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 
 def split_train_test_sets(data, file_tag, target, positive = 1, negative = 0):
     print('[+] Splitting the dataset into training and testing subsets')
@@ -175,3 +175,12 @@ def perform_decision_trees_analysis(file_tag, target):
                             xlabel='min_impurity_decrease', ylabel='accuracy', percentage=True)
         savefig(f'./output/images/{file_tag}_dt_study.png')
         print('[!] Best results achieved with %s criteria, depth=%d and min_impurity_decrease=%1.2f ==> accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
+
+    label_values = [str(value) for value in labels]
+    plot_tree(best_model, feature_names=train.columns, class_names=label_values)
+    savefig(f'./output/images/{file_tag}_dt_best_tree.png')
+
+    prd_trn = best_model.predict(trnX)
+    prd_tst = best_model.predict(tstX)
+    ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
+    savefig(f'./output/images/{file_tag}_dt_best.png')

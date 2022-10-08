@@ -4,3 +4,4 @@ output/**/*.png
 output/**/*.csv
 *.pyc
 .DS_Store
+lib/__pycache__
