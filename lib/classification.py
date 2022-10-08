@@ -3,14 +3,16 @@ from pandas import read_csv, concat, unique, DataFrame
 import matplotlib.pyplot as plt
 import lib.config.ds_charts as ds
 from sklearn.model_selection import train_test_split
-from matplotlib.pyplot import figure, savefig, subplots, Axes, title
+from matplotlib.pyplot import figure, subplots, Axes
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, CategoricalNB
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.ensemble import RandomForestClassifier
 
-def split_train_test_sets(data, file_tag, target, positive = 1, negative = 0):
+from lib.utils import save_image
+
+def split_train_test_sets(dataset, data, file_tag, target, positive = 1, negative = 0):
     print('[+] Splitting the dataset into training and testing subsets')
     values = {'Original': [len(data[data[target] == positive]), len(data[data[target] == negative])]}
 
@@ -31,7 +33,7 @@ def split_train_test_sets(data, file_tag, target, positive = 1, negative = 0):
 
     plt.figure(figsize=(12,4))
     ds.multiple_bar_chart([positive, negative], values, title='Data distribution per dataset')
-    plt.savefig('./output/images/data_distributions_per_dataset.png')
+    save_image(dataset, 'data_distributions_per_dataset')
 
 def perform_naive_bayes_analysis(file_tag, target):
     print('[+] Performing Naive Bayes analysis')
@@ -52,8 +54,7 @@ def perform_naive_bayes_analysis(file_tag, target):
     prd_tst = clf.predict(tstX)
     figure()
     ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-    savefig(f'./output/images/{file_tag}_nb_best_gaussian.png')
-
+    save_image(file_tag, f'{file_tag}_nb_best_gaussian')
     estimators = {'GaussianNB': GaussianNB(),
               'MultinomialNB': MultinomialNB(),
               'BernoulliNB': BernoulliNB()
@@ -70,13 +71,14 @@ def perform_naive_bayes_analysis(file_tag, target):
 
     figure()
     ds.bar_chart(xvalues, yvalues, title='Comparison of Naive Bayes Models', ylabel='accuracy', percentage=True)
-    savefig(f'./output/images/{file_tag}_nb_study.png')
+    save_image(file_tag, f'{file_tag}_nb_study')
 
-def plot_overfitting_study(xvalues, prd_trn, prd_tst, name, xlabel, ylabel):
+
+def plot_overfitting_study(dataset, xvalues, prd_trn, prd_tst, name, xlabel, ylabel):
     evals = {'Train': prd_trn, 'Test': prd_tst}
     figure()
     ds.multiple_line_chart(xvalues, evals, ax = None, title=f'Overfitting {name}', xlabel=xlabel, ylabel=ylabel, percentage=True)
-    savefig(f'./output/images/overfitting_{name}.png')
+    save_image(dataset, f'overfitting_{name}')
 
 def perform_knn_analysis(file_tag, target):
     print('[+] Performing KNN analysis')
@@ -111,7 +113,7 @@ def perform_knn_analysis(file_tag, target):
 
     figure()
     ds.multiple_line_chart(nvalues, values, title='KNN variants', xlabel='n', ylabel=str(accuracy_score), percentage=True)
-    savefig(f'./output/images/{file_tag}_knn_study.png')
+    save_image(file_tag, f'{file_tag}_knn_study')
     print(f'[!] Best results with %d neighbors and %s'%(best[0], best[1]))
 
     clf = knn = KNeighborsClassifier(n_neighbors=best[0], metric=best[1])
@@ -119,7 +121,7 @@ def perform_knn_analysis(file_tag, target):
     prd_trn = clf.predict(trnX)
     prd_tst = clf.predict(tstX)
     ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-    savefig(f'./output/images/{file_tag}_knn_best.png')
+    save_image(file_tag, f'{file_tag}_knn_best')
 
     d = 'euclidean'
     eval_metric = accuracy_score
@@ -132,7 +134,7 @@ def perform_knn_analysis(file_tag, target):
         prd_trn_Y = knn.predict(trnX)
         y_tst_values.append(eval_metric(tstY, prd_tst_Y))
         y_trn_values.append(eval_metric(trnY, prd_trn_Y))
-    plot_overfitting_study(nvalues, y_trn_values, y_tst_values, name=f'KNN_K={n}_{d}', xlabel='K', ylabel=str(eval_metric))
+    plot_overfitting_study(file_tag, nvalues, y_trn_values, y_tst_values, name=f'KNN_K={n}_{d}', xlabel='K', ylabel=str(eval_metric))
 
 def perform_decision_trees_analysis(file_tag, target):
     print('[+] Performing decision trees analysis')
@@ -174,19 +176,21 @@ def perform_decision_trees_analysis(file_tag, target):
             values[d] = yvalues
         ds.multiple_line_chart(min_impurity_decrease, values, ax=axs[0, k], title=f'Decision Trees with {f} criteria',
                             xlabel='min_impurity_decrease', ylabel='accuracy', percentage=True)
-        savefig(f'./output/images/{file_tag}_dt_study.png')
+        save_image(file_tag, f'{file_tag}_dt_study')
+
         print('[!] Best results achieved with %s criteria, depth=%d and min_impurity_decrease=%1.2f ==> accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
 
     figure(figsize=(100,100))
     label_values = [str(value) for value in labels]
     plot_tree(best_model, feature_names=train.columns, class_names=label_values)
-    savefig(f'./output/images/{file_tag}_dt_best_tree.png')
+    save_image(file_tag, f'{file_tag}_dt_best_tree')
 
     figure()
     prd_trn = best_model.predict(trnX)
     prd_tst = best_model.predict(tstX)
     ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-    savefig(f'./output/images/{file_tag}_dt_best.png')
+    save_image(file_tag, f'{file_tag}_dt_best')
+
     variables = train.columns
     importances = best_model.feature_importances_
     indices = np.argsort(importances)[::-1]
@@ -199,7 +203,7 @@ def perform_decision_trees_analysis(file_tag, target):
 
     figure()
     ds.horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
-    savefig(f'./output/images/{file_tag}_dt_ranking.png')
+    save_image(file_tag, f'{file_tag}_dt_ranking.png')
 
     imp = 0.0001
     f = 'entropy'
@@ -215,8 +219,8 @@ def perform_decision_trees_analysis(file_tag, target):
         y_tst_values.append(eval_metric(tstY, prd_tst_Y))
         y_trn_values.append(eval_metric(trnY, prd_trn_Y))
     figure()
-    ds.plot_overfitting_study(max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel=str(eval_metric))
-    savefig(f'./output/images/{file_tag}_dt_ranking.png')
+    ds.plot_overfitting_study(file_tag, max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel=str(eval_metric))
+    save_image(file_tag, f'{file_tag}_dt_ranking')
 
 def perform_random_forest_analysis(file_tag, target):
     print('[+] Performing random forest analysis')
@@ -260,14 +264,15 @@ def perform_random_forest_analysis(file_tag, target):
         
     ds.multiple_line_chart(n_estimators, values, ax=axs[0, k], title=f'Random Forests with max_depth={d}',
                         xlabel='nr estimators', ylabel='accuracy', percentage=True)
-    savefig(f'./output/images/{file_tag}_rf_study.png')
+    save_image(file_tag, f'{file_tag}_rf_study')
+
     print('[!] Best results with depth=%d, %1.2f features and %d estimators, with accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
 
     figure()
     prd_trn = best_model.predict(trnX)
     prd_tst = best_model.predict(tstX)
     ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
-    savefig(f'./output/images/images/{file_tag}_rf_best.png')
+    save_image(file_tag, f'{file_tag}_rf_best')
 
     variables = train.columns
     importances = best_model.feature_importances_
@@ -280,7 +285,7 @@ def perform_random_forest_analysis(file_tag, target):
 
     figure()
     ds.horizontal_bar_chart(elems, importances[indices], stdevs[indices], title='Random Forest Features importance', xlabel='importance', ylabel='variables')
-    savefig(f'./output/images/images/{file_tag}_rf_ranking.png')
+    save_image(file_tag, f'{file_tag}_rf_ranking')
 
     f = 0.7
     max_depth = 10
@@ -294,5 +299,5 @@ def perform_random_forest_analysis(file_tag, target):
         prd_trn_Y = rf.predict(trnX)
         y_tst_values.append(eval_metric(tstY, prd_tst_Y))
         y_trn_values.append(eval_metric(trnY, prd_trn_Y))
-    ds.plot_overfitting_study(n_estimators, y_trn_values, y_tst_values, name=f'RF_depth={max_depth}_vars={f}', xlabel='nr_estimators', ylabel=str(eval_metric))
+    ds.plot_overfitting_study(file_tag, n_estimators, y_trn_values, y_tst_values, name=f'RF_depth={max_depth}_vars={f}', xlabel='nr_estimators', ylabel=str(eval_metric))
         

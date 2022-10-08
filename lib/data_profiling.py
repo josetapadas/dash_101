@@ -1,5 +1,5 @@
 from lib.config.ds_charts import bar_chart, get_variable_types
-from matplotlib.pyplot import figure, savefig, subplots
+from matplotlib.pyplot import figure, subplots
 from lib.utils import *
 import numpy as np
 
@@ -17,25 +17,26 @@ def check_missing_values(data):
     if mv == {}:
         print("[!] No missing values found in dataset.")
 
-def check_record_count(data):
+def check_record_count(dataset, data):
     figure()
     values = {'# records': data.shape[0], '# variables': data.shape[1]}
     bar_chart(list(values.keys()), list(values.values()), title='# of records vs # variables')
-    savefig('./output/images/records_variables.png')
+    save_image(dataset, 'records_variables')
 
-def check_dataframe_types(data):
+def check_dataframe_types(dataset, data):
     cat_vars = data.select_dtypes(include='object')
     data[cat_vars.columns] = data.select_dtypes(['object']).apply(lambda x: x.astype('category'))
-    save_pd_as_csv(data.dtypes, 'data_types')
+    save_pd_as_csv(dataset, data.dtypes, 'data_types')
 
-def check_variable_types(data):
+def check_variable_types(dataset, data):
     variable_types = get_variable_types(data)
     counts = {}
     for tp in variable_types.keys():
         counts[tp] = len(variable_types[tp])
     figure(figsize=(4,2))
     bar_chart(list(counts.keys()), list(counts.values()), title='Nr of variables per type')
-    savefig('./output/images/variable_types.png')
+    save_image(dataset, 'variable_types')
+
 
 def group_numeric_variables(variables, N = 2):
     if [] == variables:
@@ -46,7 +47,7 @@ def group_numeric_variables(variables, N = 2):
 def generate_rows_cols(number_of_variables, N):
     return (number_of_variables // N, N) if number_of_variables % N == 0 else (number_of_variables // N + 1, N)
 
-def generate_granularity_single(data):
+def generate_granularity_single(dataset, data):
     print('[+] Generating granularity for each single variables')
     plots_per_line = 3
     grouped_variables = group_numeric_variables(get_variable_types(data)['Numeric'], plots_per_line)
@@ -69,9 +70,9 @@ def generate_granularity_single(data):
             axs[i, j].hist(data[single_variable].values, bins=100)
             j += 1
         
-        savefig(f'./output/images/granularity_single_g{group_index}.png')
+        save_image(dataset, f'granularity_single_g{group_index}')
 
-def granularity_study_bins(data):
+def granularity_study_bins(dataset, data):
     print('[+] Generating general granularity histograms for different bins.')
     variables = get_variable_types(data)['Numeric']
     if [] == variables:
@@ -89,9 +90,9 @@ def granularity_study_bins(data):
             axs[i, j].set_xlabel(variables[i])
             axs[i, j].set_ylabel('Nr records')
             axs[i, j].hist(data[variables[i]].values, bins=bins[j])
-    savefig('./output/images/granularity_study.png')
+    save_image(dataset, 'granularity_study')
 
-def generate_boxplots(data):
+def generate_boxplots(dataset, data):
     print('[+] Generating the bloxplots for the dataset')
 
     plots_per_line = 3
@@ -112,9 +113,9 @@ def generate_boxplots(data):
             axs[i, j].boxplot(data[single_variable].dropna().values)
             j += 1
         
-        savefig(f'./output/images/boxplot_g{group_index}.png')
+        save_image(dataset, f'boxplot_g{group_index}')
 
-def generate_outliers_plot(data):
+def generate_outliers_plot(dataset, data):
     print('[+] Generating the plots to identify the outliers')
 
     NR_STDEV: int = 2
@@ -148,7 +149,7 @@ def generate_outliers_plot(data):
             axs[i, j].legend()
             j += 1
         
-        savefig(f'./output/images/outliers_g{group_index}.png')
+        save_image(dataset, f'outliers_g{group_index}')
 
 def remove_outliers_for_feature(feature, feature_name, dataset):
     # identify the 25th and 75th quartiles

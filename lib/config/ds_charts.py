@@ -13,6 +13,8 @@ from sklearn.tree import export_graphviz
 from matplotlib.font_manager import FontProperties
 from sklearn.preprocessing import OneHotEncoder
 
+from lib.utils import save_image
+
 FONT_TEXT = FontProperties(size=6)
 TEXT_MARGIN = 0.05
 
@@ -274,8 +276,8 @@ def get_variable_types(df: DataFrame) -> dict:
             variable_types['Symbolic'].append(c)
     return variable_types
 
-def plot_overfitting_study(xvalues, prd_trn, prd_tst, name, xlabel, ylabel, pct=True):
+def plot_overfitting_study(dataset, xvalues, prd_trn, prd_tst, name, xlabel, ylabel, pct=True):
     evals = {'Train': prd_trn, 'Test': prd_tst}
     plt.figure()
     multiple_line_chart(xvalues, evals, ax = None, title=f'Overfitting {name}', xlabel=xlabel, ylabel=ylabel, percentage=pct)
-    plt.savefig('./output/images/overfitting_{name}.png')
+    save_image(dataset, f'overfitting_{name}')
