@@ -8,6 +8,7 @@ from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, Categori
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.ensemble import RandomForestClassifier
 
 def split_train_test_sets(data, file_tag, target, positive = 1, negative = 0):
     print('[+] Splitting the dataset into training and testing subsets')
@@ -216,3 +217,82 @@ def perform_decision_trees_analysis(file_tag, target):
     figure()
     ds.plot_overfitting_study(max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel=str(eval_metric))
     savefig(f'./output/images/{file_tag}_dt_ranking.png')
+
+def perform_random_forest_analysis(file_tag, target):
+    print('[+] Performing random forest analysis')
+
+    train: DataFrame = read_csv(f'datasets/{file_tag}_train.csv')
+    trnY: np.ndarray = train.pop(target).values
+    trnX: np.ndarray = train.values
+    labels = unique(trnY)
+    labels.sort()
+
+    test: DataFrame = read_csv(f'datasets/{file_tag}_test.csv')
+    tstY: np.ndarray = test.pop(target).values
+    tstX: np.ndarray = test.values
+
+    n_estimators = [5, 10, 25, 50, 75, 100, 200, 300, 400]
+    max_depths = [5, 10, 25]
+    max_features = [.3, .5, .7, 1]
+    best = ('', 0, 0)
+    last_best = 0
+    best_model = None
+
+    cols = len(max_depths)
+    figure()
+    fig, axs = subplots(1, cols, figsize=(cols*ds.HEIGHT, ds.HEIGHT), squeeze=False)
+    for k in range(len(max_depths)):
+        d = max_depths[k]
+        values = {}
+        for f in max_features:
+            yvalues = []
+            for n in n_estimators:
+                rf = RandomForestClassifier(n_estimators=n, max_depth=d, max_features=f)
+                rf.fit(trnX, trnY)
+                prdY = rf.predict(tstX)
+                yvalues.append(accuracy_score(tstY, prdY))
+                if yvalues[-1] > last_best:
+                    best = (d, f, n)
+                    last_best = yvalues[-1]
+                    best_model = rf
+
+            values[f] = yvalues
+        
+    ds.multiple_line_chart(n_estimators, values, ax=axs[0, k], title=f'Random Forests with max_depth={d}',
+                        xlabel='nr estimators', ylabel='accuracy', percentage=True)
+    savefig(f'./output/images/{file_tag}_rf_study.png')
+    print('[!] Best results with depth=%d, %1.2f features and %d estimators, with accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
+
+    figure()
+    prd_trn = best_model.predict(trnX)
+    prd_tst = best_model.predict(tstX)
+    ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
+    savefig(f'./output/images/images/{file_tag}_rf_best.png')
+
+    variables = train.columns
+    importances = best_model.feature_importances_
+    stdevs = np.std([tree.feature_importances_ for tree in best_model.estimators_], axis=0)
+    indices = np.argsort(importances)[::-1]
+    elems = []
+    for f in range(len(variables)):
+        elems += [variables[indices[f]]]
+        print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
+
+    figure()
+    ds.horizontal_bar_chart(elems, importances[indices], stdevs[indices], title='Random Forest Features importance', xlabel='importance', ylabel='variables')
+    savefig(f'./output/images/images/{file_tag}_rf_ranking.png')
+
+    f = 0.7
+    max_depth = 10
+    eval_metric = accuracy_score
+    y_tst_values = []
+    y_trn_values = []
+    for n in n_estimators:
+        rf = RandomForestClassifier(n_estimators=n, max_depth=d, max_features=f)
+        rf.fit(trnX, trnY)
+        prd_tst_Y = rf.predict(tstX)
+        prd_trn_Y = rf.predict(trnX)
+        y_tst_values.append(eval_metric(tstY, prd_tst_Y))
+        y_trn_values.append(eval_metric(trnY, prd_trn_Y))
+    ds.plot_overfitting_study(n_estimators, y_trn_values, y_tst_values, name=f'RF_depth={max_depth}_vars={f}', xlabel='nr_estimators', ylabel=str(eval_metric))
+        

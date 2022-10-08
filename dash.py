@@ -2,7 +2,7 @@
 # Dependancies setup
 #
 
-from lib.classification import perform_decision_trees_analysis, perform_knn_analysis, perform_naive_bayes_analysis, split_train_test_sets
+from lib.classification import perform_decision_trees_analysis, perform_knn_analysis, perform_naive_bayes_analysis, perform_random_forest_analysis, split_train_test_sets
 from lib.config.config import *
 from lib.data_preparation import check_data_balancing, equal_frequency_descretization, equal_width_descretization, perform_minmax_scaling, perform_oversample, perform_smote, perform_standard_scaling, perform_undersample
 from lib.data_profiling import *
@@ -93,9 +93,19 @@ save_pd_as_csv(data, 'describe')
 #equal_width_data = equal_width_descretization(data)
 #equal_freq_data = equal_frequency_descretization(data)
 
+#
+# split training and test sets
+#
+
 split_train_test_sets(data, 'taiwan', 'Bankrupt?')
+
+#
+# classification
+#
+
 #perform_naive_bayes_analysis('taiwan', 'Bankrupt?')
 #perform_knn_analysis('taiwan', 'Bankrupt?')
-perform_decision_trees_analysis('taiwan', 'Bankrupt?')
+#perform_decision_trees_analysis('taiwan', 'Bankrupt?')
+perform_random_forest_analysis('taiwan', 'Bankrupt?')
 
 print("[!] Done :)")
