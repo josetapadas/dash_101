@@ -176,11 +176,43 @@ def perform_decision_trees_analysis(file_tag, target):
         savefig(f'./output/images/{file_tag}_dt_study.png')
         print('[!] Best results achieved with %s criteria, depth=%d and min_impurity_decrease=%1.2f ==> accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
 
+    figure(figsize=(100,100))
     label_values = [str(value) for value in labels]
     plot_tree(best_model, feature_names=train.columns, class_names=label_values)
     savefig(f'./output/images/{file_tag}_dt_best_tree.png')
 
+    figure()
     prd_trn = best_model.predict(trnX)
     prd_tst = best_model.predict(tstX)
     ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
     savefig(f'./output/images/{file_tag}_dt_best.png')
+    variables = train.columns
+    importances = best_model.feature_importances_
+    indices = np.argsort(importances)[::-1]
+    elems = []
+    imp_values = []
+    for f in range(len(variables)):
+        elems += [variables[indices[f]]]
+        imp_values += [importances[indices[f]]]
+        print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
+
+    figure()
+    ds.horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
+    savefig(f'./output/images/{file_tag}_dt_ranking.png')
+
+    imp = 0.0001
+    f = 'entropy'
+    eval_metric = accuracy_score
+    y_tst_values = []
+    y_trn_values = []
+    for d in max_depths:
+        tree = DecisionTreeClassifier(max_depth=d, criterion=f, min_impurity_decrease=imp)
+        tree.fit(trnX, trnY)
+        prdY = tree.predict(tstX)
+        prd_tst_Y = tree.predict(tstX)
+        prd_trn_Y = tree.predict(trnX)
+        y_tst_values.append(eval_metric(tstY, prd_tst_Y))
+        y_trn_values.append(eval_metric(trnY, prd_trn_Y))
+    figure()
+    ds.plot_overfitting_study(max_depths, y_trn_values, y_tst_values, name=f'DT=imp{imp}_{f}', xlabel='max_depth', ylabel=str(eval_metric))
+    savefig(f'./output/images/{file_tag}_dt_ranking.png')
