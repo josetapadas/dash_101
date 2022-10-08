@@ -5,4 +5,4 @@ output/**/*.csv
 *.pyc
 .DS_Store
 lib/__pycache__/data_preparation.cpython-310.pyc
-./datasets/*.csv
+**/datasets/**/*.csv
