@@ -56,8 +56,8 @@ normalized_data_zscore = perform_standard_scaling('snp', data)
 save_pd_as_csv('snp', normalized_data_zscore.describe(), "describe_normalized_zenscore")
 
 normalized_data_minmax = perform_minmax_scaling('snp', normalized_data_zscore)
-# restora a coluna 'Bankrupt?' do dataset original
-normalized_data_minmax['Bankrupt?'] = data['Bankrupt?']
+# restora a coluna 'UPDOWN_SnP' do dataset original
+normalized_data_minmax['UPDOWN_SnP'] = data['UPDOWN_SnP']
 
 save_pd_as_csv('snp', normalized_data_minmax.describe(), "describe_normalized_minmax")
 
@@ -71,10 +71,10 @@ axs[0, 2].set_title('MinMax normalization')
 normalized_data_minmax.boxplot(ax=axs[0, 2])
 save_image('snp', 'boxplot_normalized_data_with_no_outliers')
 
-check_data_balancing('snp', normalized_data_zscore, 'Bankrupt?')
-undersampled_data = perform_undersample('snp', normalized_data_zscore, 'Bankrupt?')
-oversampled_data = perform_oversample('snp', normalized_data_zscore, 'Bankrupt?')
-smote_data = perform_smote('snp', normalized_data_zscore, 'Bankrupt?')
+check_data_balancing('snp', normalized_data_zscore, 'UPDOWN_SnP')
+undersampled_data = perform_undersample('snp', normalized_data_zscore, 'UPDOWN_SnP')
+oversampled_data = perform_oversample('snp', normalized_data_zscore, 'UPDOWN_SnP')
+smote_data = perform_smote('snp', normalized_data_zscore, 'UPDOWN_SnP')
 
 equal_width_data = equal_width_descretization('snp', data)
 equal_freq_data = equal_frequency_descretization('snp', data)
@@ -83,15 +83,15 @@ equal_freq_data = equal_frequency_descretization('snp', data)
 # split training and test sets
 #
 
-split_train_test_sets('snp', data, 'snp', 'Bankrupt?')
+split_train_test_sets('snp', data, 'snp', 'UPDOWN_SnP')
 
 #
 # classification
 #
 
-perform_naive_bayes_analysis('snp', 'Bankrupt?')
-perform_knn_analysis('snp', 'Bankrupt?')
-#perform_decision_trees_analysis('snp', 'Bankrupt?')
-#perform_random_forest_analysis('snp', 'Bankrupt?')
+perform_naive_bayes_analysis('snp', 'UPDOWN_SnP')
+perform_knn_analysis('snp', 'UPDOWN_SnP')
+#perform_decision_trees_analysis('snp', 'UPDOWN_SnP')
+#perform_random_forest_analysis('snp', 'UPDOWN_SnP')
 
 print("[!] Done :)")

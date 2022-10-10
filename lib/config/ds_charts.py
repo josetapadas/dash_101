@@ -271,6 +271,8 @@ def get_variable_types(df: DataFrame) -> dict:
             variable_types['Numeric'].append(c)
         elif df[c].dtype == 'float':
             variable_types['Numeric'].append(c)
+        elif df[c].dtype == 'float64':
+            variable_types['Numeric'].append(c)
         else:
             df[c].astype('category')
             variable_types['Symbolic'].append(c)
