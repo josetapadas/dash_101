@@ -1,7 +1,5 @@
-lib/__pycache__/*.pyc
-__pycache__/*
 output/**/*.png
 output/**/*.csv
+output/**/*.xlsx
 *.pyc
 .DS_Store
-lib/__pycache__
