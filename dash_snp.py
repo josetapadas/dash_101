@@ -40,6 +40,8 @@ generate_granularity_single('snp', data)
 granularity_study_bins('snp', data)
 generate_boxplots('snp', data)
 generate_outliers_plot('snp', data)
+generate_sparsity_study('snp', data)
+
 
 #
 # Data preparation

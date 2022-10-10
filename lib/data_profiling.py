@@ -1,4 +1,4 @@
-from lib.config.ds_charts import bar_chart, get_variable_types
+from lib.config.ds_charts import bar_chart, get_variable_types, HEIGHT
 from matplotlib.pyplot import figure, subplots
 from lib.utils import *
 import numpy as np
@@ -193,3 +193,20 @@ def remove_outliers(data):
         data_no_outliers = remove_outliers_for_feature(data[col], str(col), data)
 
     return data_no_outliers
+
+
+def generate_sparsity_study(dataset, data):
+    print('[+] Generating the sparsity plot...')
+
+    numeric_vars = get_variable_types(data)['Numeric']
+    rows, cols = len(numeric_vars)-1, len(numeric_vars)-1
+    fig, axs = subplots(rows, cols, figsize=(cols * HEIGHT, rows *HEIGHT), squeeze=False)
+    for i in range(len(numeric_vars)):
+        var1 = numeric_vars[i]
+        for j in range(i+1, len(numeric_vars)):
+            var2 = numeric_vars[j]
+            axs[i, j-1].set_title("%s x %s"%(var1,var2))
+            axs[i, j-1].set_xlabel(var1)
+            axs[i, j-1].set_ylabel(var2)
+            axs[i, j-1].scatter(data[var1], data[var2])
+    save_image(dataset, f'sparsity_study')
