@@ -41,7 +41,8 @@ granularity_study_bins('snp', data)
 generate_boxplots('snp', data)
 generate_outliers_plot('snp', data)
 generate_sparsity_study('snp', data)
-
+generate_textual_correlation_table('snp', data)
+generate_correlation_heatmap('snp', data)
 
 #
 # Data preparation

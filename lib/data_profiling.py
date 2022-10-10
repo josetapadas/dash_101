@@ -1,5 +1,6 @@
 from lib.config.ds_charts import bar_chart, get_variable_types, HEIGHT
-from matplotlib.pyplot import figure, subplots
+from matplotlib.pyplot import figure, subplots, title
+from seaborn import heatmap
 from lib.utils import *
 import numpy as np
 
@@ -210,3 +211,16 @@ def generate_sparsity_study(dataset, data):
             axs[i, j-1].set_ylabel(var2)
             axs[i, j-1].scatter(data[var1], data[var2])
     save_image(dataset, f'sparsity_study')
+
+def generate_textual_correlation_table(dataset, data):
+    print('[+] Generating the textual correlation table...')
+    corr_mtx = abs(data.corr())
+    corr_mtx.style.background_gradient(cmap='coolwarm')
+    corr_mtx.to_csv(f'./output/{dataset}/tables/textual_correlation_table')
+
+def generate_correlation_heatmap(dataset, data):
+    corr_mtx = abs(data.corr())
+    fig = figure(figsize=[120, 120])
+    heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns, yticklabels=corr_mtx.columns, annot=True, cmap='Blues')
+    title('Correlation analysis')
+    save_image(dataset, f'{dataset}_rf_ranking')

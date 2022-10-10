@@ -3,7 +3,7 @@ from pandas import read_csv, concat, unique, DataFrame
 import matplotlib.pyplot as plt
 import lib.config.ds_charts as ds
 from sklearn.model_selection import train_test_split
-from matplotlib.pyplot import figure, subplots, Axes
+from matplotlib.pyplot import figure, subplots, Axes, title
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, CategoricalNB
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
@@ -56,7 +56,7 @@ def perform_naive_bayes_analysis(file_tag, target):
     ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
     save_image(file_tag, f'{file_tag}_nb_best_gaussian')
     estimators = {'GaussianNB': GaussianNB(),
-              'MultinomialNB': MultinomialNB(),
+              #'MultinomialNB': MultinomialNB(),
               'BernoulliNB': BernoulliNB()
               #'CategoricalNB': CategoricalNB
               }

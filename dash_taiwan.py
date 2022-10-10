@@ -38,9 +38,11 @@ save_pd_as_csv('taiwan', data, 'describe')
 # check_missing_values(data)
 # generate_granularity_single('taiwan', data)
 # granularity_study_bins('taiwan', data)
+generate_textual_correlation_table('taiwan', data)
+generate_correlation_heatmap('taiwan', data)
 # generate_boxplots('taiwan', data)
 # generate_outliers_plot('taiwan', data)
-generate_sparsity_study('taiwan', data)
+# generate_sparsity_study('taiwan', data)
 
 #
 # Data preparation
