@@ -74,24 +74,34 @@ def generate_granularity_single(dataset, data):
 
 def granularity_study_bins(dataset, data):
     print('[+] Generating general granularity histograms for different bins.')
-    variables = get_variable_types(data)['Numeric']
-    if [] == variables:
-        raise ValueError('There are no numeric variables.')
+    plots_per_line = 3
+    grouped_variables = group_numeric_variables(get_variable_types(data)['Numeric'], plots_per_line)
 
-    number_of_variables = len(variables)
+    group_index = 0
 
-    rows, cols = (number_of_variables // 2, 2) if number_of_variables % 2 == 0 else (number_of_variables // 2 + 1, 2)
-    bins = (10, 100, 1000)
-    cols = len(bins)
-    fig, axs = subplots(rows, cols, figsize=(cols*10, rows*8), squeeze=False)
-    for i in range(rows):
-        for j in range(cols):
-            axs[i, j].set_title('Histogram for %s %d bins'%(variables[i], bins[j]))
-            axs[i, j].set_xlabel(variables[i])
-            axs[i, j].set_ylabel('Nr records')
-            axs[i, j].hist(data[variables[i]].values, bins=bins[j])
-    save_image(dataset, 'granularity_study')
+    for group in grouped_variables:
+        group_index += 1
+        number_of_variables = len(group)
+        rows, cols = generate_rows_cols(number_of_variables, plots_per_line)
 
+        bins = (10, 100, 1000)
+        cols = len(bins)
+        
+        fig, axs = subplots(rows, cols, figsize=(cols*8, rows*6), squeeze=False)
+        i, j = 0, 0
+        
+        print(f'[!] Plotting group {group_index} of {len(grouped_variables)} ...')
+
+        for single_variable in group:
+            for j in range(cols):
+                axs[i, j].set_title(f'Histogram for f{single_variable} and {bins[j]}')
+                axs[i, j].set_xlabel(single_variable)
+                axs[i, j].set_ylabel('Nr records')
+                axs[i, j].hist(data[single_variable].values, bins=bins[j])
+                j += 1
+        
+        save_image(dataset, f'granularity_study_g{group_index}')
+           
 def generate_boxplots(dataset, data):
     print('[+] Generating the bloxplots for the dataset')
 
