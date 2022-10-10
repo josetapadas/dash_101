@@ -93,5 +93,6 @@ save_pd_as_csv('taiwan', data, 'describe')
 #perform_decision_trees_analysis('taiwan', 'Bankrupt?')
 #perform_random_forest_analysis('taiwan', 'Bankrupt?')
 perform_multi_layer_perceptrons('taiwan', 'Bankrupt?')
+perform_gradient_boosting('taiwan', 'Bankrupt?')
 
 print("[!] Done :)")

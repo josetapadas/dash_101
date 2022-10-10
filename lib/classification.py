@@ -366,11 +366,11 @@ def perform_multi_layer_perceptrons(file_tag, target):
         y_tst_values.append(eval_metric(tstY, prd_tst_Y))
         y_trn_values.append(eval_metric(trnY, prd_trn_Y))
     figure()
-    plot_overfitting_study(max_iter, y_trn_values, y_tst_values, name=f'NN_lr_type={lr_type}_lr={lr}', xlabel='nr episodes', ylabel=str(eval_metric))
+    plot_overfitting_study(file_tag, max_iter, y_trn_values, y_tst_values, name=f'NN_lr_type={lr_type}_lr={lr}', xlabel='nr episodes', ylabel=str(eval_metric))
     save_image(file_tag, f'{file_tag}_mlp_best')
 
 def perform_gradient_boosting(file_tag, target):
-    print('[+] Performing multi layer perceptrons analysis')
+    print('[+] Performing gradient boosting analysis')
 
     train: DataFrame = read_csv(f'datasets/{file_tag}_train.csv')
     trnY: np.ndarray = train.pop(target).values
@@ -443,4 +443,4 @@ def perform_gradient_boosting(file_tag, target):
         prd_trn_Y = gb.predict(trnX)
         y_tst_values.append(eval_metric(tstY, prd_tst_Y))
         y_trn_values.append(eval_metric(trnY, prd_trn_Y))
-    plot_overfitting_study(n_estimators, y_trn_values, y_tst_values, name=f'GB_depth={max_depth}_lr={lr}', xlabel='nr_estimators', ylabel=str(eval_metric))
+    plot_overfitting_study(file_tag, n_estimators, y_trn_values, y_tst_values, name=f'GB_depth={max_depth}_lr={lr}', xlabel='nr_estimators', ylabel=str(eval_metric))
