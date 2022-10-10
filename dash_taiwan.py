@@ -52,13 +52,13 @@ save_pd_as_csv('taiwan', data, 'describe')
 # print(f'[!] Original dataset shape: {data.shape}')
 # print(f'[!] Data shape with no outliers: {data_no_outliers.shape}')
 
-normalized_data_zscore = perform_standard_scaling('taiwan', data)
-save_pd_as_csv('taiwan', normalized_data_zscore.describe(), "describe_normalized_zenscore")
+# normalized_data_zscore = perform_standard_scaling('taiwan', data)
+# save_pd_as_csv('taiwan', normalized_data_zscore.describe(), "describe_normalized_zenscore")
 
-normalized_data_minmax = perform_minmax_scaling('taiwan', normalized_data_zscore)
-# # restora a coluna 'Bankrupt?' do dataset original
-normalized_data_minmax['Bankrupt?'] = data['Bankrupt?']
-save_pd_as_csv('taiwan', normalized_data_minmax.describe(), "describe_normalized_minmax")
+# normalized_data_minmax = perform_minmax_scaling('taiwan', normalized_data_zscore)
+# # # restora a coluna 'Bankrupt?' do dataset original
+# normalized_data_minmax['Bankrupt?'] = data['Bankrupt?']
+# save_pd_as_csv('taiwan', normalized_data_minmax.describe(), "describe_normalized_minmax")
 
 #generating plot for comparing the normalization algorithms
 # fig, axs = subplots(1, 3, figsize=(100,50),squeeze=False)
@@ -92,5 +92,6 @@ save_pd_as_csv('taiwan', normalized_data_minmax.describe(), "describe_normalized
 # perform_knn_analysis('taiwan', 'Bankrupt?')
 #perform_decision_trees_analysis('taiwan', 'Bankrupt?')
 #perform_random_forest_analysis('taiwan', 'Bankrupt?')
+perform_multi_layer_perceptrons('taiwan', 'Bankrupt?')
 
 print("[!] Done :)")
