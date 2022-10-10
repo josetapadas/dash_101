@@ -2,9 +2,9 @@
 # Dependancies setup
 #
 
-from lib.classification import perform_decision_trees_analysis, perform_knn_analysis, perform_naive_bayes_analysis, perform_random_forest_analysis, split_train_test_sets
+from lib.classification import *
 from lib.config.config import *
-from lib.data_preparation import check_data_balancing, equal_frequency_descretization, equal_width_descretization, perform_minmax_scaling, perform_oversample, perform_smote, perform_standard_scaling, perform_undersample
+from lib.data_preparation import *
 from lib.data_profiling import *
 import pandas as pd
 from numpy import log
