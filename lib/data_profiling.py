@@ -216,11 +216,11 @@ def generate_textual_correlation_table(dataset, data):
     print('[+] Generating the textual correlation table...')
     corr_mtx = abs(data.corr())
     corr_mtx.style.background_gradient(cmap='coolwarm')
-    corr_mtx.to_csv(f'./output/{dataset}/tables/textual_correlation_table.csv')
+    corr_mtx.to_excel(f'./output/{dataset}/tables/textual_correlation_table.xlsx', engine='openpyxl', index=False)
 
 def generate_correlation_heatmap(dataset, data):
     corr_mtx = abs(data.corr())
     fig = figure(figsize=[120, 120])
     heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns, yticklabels=corr_mtx.columns, annot=True, cmap='Blues')
     title('Correlation analysis')
-    save_image(dataset, f'{dataset}_rf_ranking')
+    save_image(dataset, f'{dataset}_rf_´ranking')
