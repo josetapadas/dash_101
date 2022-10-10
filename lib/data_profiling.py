@@ -47,6 +47,9 @@ def group_numeric_variables(variables, N = 2):
 def generate_rows_cols(number_of_variables, N):
     return (number_of_variables // N, N) if number_of_variables % N == 0 else (number_of_variables // N + 1, N)
 
+def get_variable_number(data, key):
+    return f'X{list(data.keys()).index(key) + 1}'
+
 def generate_granularity_single(dataset, data):
     print('[+] Generating granularity for each single variables')
     plots_per_line = 3
@@ -64,7 +67,7 @@ def generate_granularity_single(dataset, data):
         print(f'[!] Plotting group {group_index} of {len(grouped_variables)} ...')
 
         for single_variable in group:
-            axs[i, j].set_title(f'Histogram for {single_variable}')
+            axs[i, j].set_title(f'Histogram for {get_variable_number(data, single_variable)}')
             axs[i, j].set_xlabel(single_variable)
             axs[i, j].set_ylabel('nr records')
             axs[i, j].hist(data[single_variable].values, bins=100)
@@ -94,11 +97,12 @@ def granularity_study_bins(dataset, data):
 
         for single_variable in group:
             for j in range(cols):
-                axs[i, j].set_title(f'Histogram for f{single_variable} and {bins[j]}')
+                axs[i, j].set_title(f'Histogram for {get_variable_number(data, single_variable)} and bin {bins[j]}')
                 axs[i, j].set_xlabel(single_variable)
                 axs[i, j].set_ylabel('Nr records')
                 axs[i, j].hist(data[single_variable].values, bins=bins[j])
                 j += 1
+
         
         save_image(dataset, f'granularity_study_g{group_index}')
            
@@ -119,7 +123,7 @@ def generate_boxplots(dataset, data):
         print(f'[!] Plotting group {group_index} of {len(grouped_variables)}.')
 
         for single_variable in group:
-            axs[i, j].set_title(f'{single_variable}')
+            axs[i, j].set_title(f'{get_variable_number(data, single_variable)}')
             axs[i, j].boxplot(data[single_variable].dropna().values)
             j += 1
         
@@ -153,7 +157,7 @@ def generate_outliers_plot(dataset, data):
             std = NR_STDEV * summary5[single_variable]['std']
             outliers_stdev = data[data[single_variable] > summary5[single_variable]['mean'] + std].count()[single_variable] + data[data[single_variable] < summary5[single_variable]['mean'] - std].count()[single_variable]
 
-            axs[i, j].set_title(f'{single_variable}')
+            axs[i, j].set_title(f'{get_variable_number(data, single_variable)}')
             axs[i, j].bar(1 + width/2, outliers_iqr, width, label='iqr')
             axs[i, j].bar(1 - width/2, outliers_stdev, width, label='stdev')
             axs[i, j].legend()
