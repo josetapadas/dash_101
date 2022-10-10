@@ -223,4 +223,4 @@ def generate_correlation_heatmap(dataset, data):
     fig = figure(figsize=[120, 120])
     heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns, yticklabels=corr_mtx.columns, annot=True, cmap='Blues')
     title('Correlation analysis')
-    save_image(dataset, f'{dataset}_rf_´ranking')
+    save_image(dataset, f'{dataset}_rf_ranking')

@@ -38,8 +38,8 @@ save_pd_as_csv('taiwan', data, 'describe')
 # check_missing_values(data)
 # generate_granularity_single('taiwan', data)
 # granularity_study_bins('taiwan', data)
-generate_textual_correlation_table('taiwan', data)
-generate_correlation_heatmap('taiwan', data)
+#generate_textual_correlation_table('taiwan', data)
+#generate_correlation_heatmap('taiwan', data)
 # generate_boxplots('taiwan', data)
 # generate_outliers_plot('taiwan', data)
 # generate_sparsity_study('taiwan', data)
@@ -52,14 +52,13 @@ generate_correlation_heatmap('taiwan', data)
 # print(f'[!] Original dataset shape: {data.shape}')
 # print(f'[!] Data shape with no outliers: {data_no_outliers.shape}')
 
-# normalized_data_zscore = perform_standard_scaling('taiwan', data)
-# save_pd_as_csv('taiwan', normalized_data_zscore.describe(), "describe_normalized_zenscore")
+normalized_data_zscore = perform_standard_scaling('taiwan', data)
+save_pd_as_csv('taiwan', normalized_data_zscore.describe(), "describe_normalized_zenscore")
 
-# normalized_data_minmax = perform_minmax_scaling('taiwan', normalized_data_zscore)
+normalized_data_minmax = perform_minmax_scaling('taiwan', normalized_data_zscore)
 # # restora a coluna 'Bankrupt?' do dataset original
-# normalized_data_minmax['Bankrupt?'] = data['Bankrupt?']
-
-# save_pd_as_csv('taiwan', normalized_data_minmax.describe(), "describe_normalized_minmax")
+normalized_data_minmax['Bankrupt?'] = data['Bankrupt?']
+save_pd_as_csv('taiwan', normalized_data_minmax.describe(), "describe_normalized_minmax")
 
 #generating plot for comparing the normalization algorithms
 # fig, axs = subplots(1, 3, figsize=(100,50),squeeze=False)
