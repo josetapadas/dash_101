@@ -28,46 +28,31 @@ missing_values = ["NA", "n/a", "na", "?", "--", "#VALUE!"]
 data = pd.read_csv('./datasets/snp.csv', sep=',', decimal='.', parse_dates=True, infer_datetime_format=True, na_values = missing_values)
 save_pd_as_csv('snp', data, 'describe')
 
-#
-# 1. Data Prifiling
-#
-
-# check_record_count('snp', data)
-# check_dataframe_types('snp', data)
-# check_variable_types('snp', data)
-# check_missing_values(data)
-# generate_granularity_single('snp', data)
-# granularity_study_bins('snp', data)
-# generate_boxplots('snp', data)
-# generate_outliers_plot('snp', data)
-# generate_sparsity_study('snp', data)
-# generate_textual_correlation_table('snp', data)
-# generate_correlation_heatmap('snp', data)
 
 #
-# Data preparation
+# 0) Data cleanup
 #
 
 #
 # 1) dataset sem feature engineering
 #
 
-# new_data_no_feat_eng = pd.DataFrame(data)
-# new_data_no_feat_eng.drop(new_data_no_feat_eng.iloc[:, 56:], inplace=True, axis=1)
+new_data_no_feat_eng = pd.DataFrame(data)
+new_data_no_feat_eng.drop(new_data_no_feat_eng.iloc[:, 56:], inplace=True, axis=1)
 
-# # removendo algumas percentagens
-# new_data_no_feat_eng = clean_empty_excel_value(new_data_no_feat_eng, 'DPRIME', '#VALUE!')
-# new_data_no_feat_eng = convert_percentage_for_column(new_data_no_feat_eng, 'DPRIME')
+# removendo algumas percentagens
+new_data_no_feat_eng = clean_empty_excel_value(new_data_no_feat_eng, 'DPRIME', '#VALUE!')
+new_data_no_feat_eng = convert_percentage_for_column(new_data_no_feat_eng, 'DPRIME')
 
-# # removendo a data
-# new_data_with_feat_eng.drop(['DATE'], axis=1, inplace=True)
+# removendo a data
+new_data_no_feat_eng.drop(['DATE'], axis=1, inplace=True)
 
 
-# # resultado
-# save_pd_as_csv('snp', new_data_no_feat_eng, "no_feature_engineered")
+# resultado
+save_pd_as_csv('snp', new_data_no_feat_eng, "no_feature_engineered")
 
 # prepara a variável a usar abaixo
-# prepared_dataset = new_data_no_feat_eng
+prepared_dataset = new_data_no_feat_eng
 
 #### end of preparation of dataset (1)
 
@@ -75,62 +60,78 @@ save_pd_as_csv('snp', data, 'describe')
 # 2) dataset com feature engineering
 #
 
-new_data_with_feat_eng = pd.DataFrame(data)
-percentage_columns = [
-    'DPRIME',
-    'Var.DGS30',
-    'Var.DEXUSEU',
-    'Var. DEXUSUK',
-    'Var.VIX',
-    'Var.Volume S&P500',
-    'PX_LAST CCMP.1',
-    'PX_LAST INDU.1',
-    'px last eurostoxx.2',
-    'px last footsie.1',
-    'price nikkei.1',
-    'price HSI.1',
-    'price energy.1',
-    'volume energy.1',
-    'price information.1',
-    'volume inform.1',
-    'health price.1',
-    'volume health.1',
-    'price cons.disc.1',
-    'volume cons.disc',
-    'price utility',
-    'vol.utility',
-    'finant.price',
-    'vol.finant',
-    'indust.price',
-    'vol.industr',
-    'cons.price',
-    'volume consum',
-    'telec.price',
-    'vol.telec',
-    'mater.price',
-    'vol.mater'
-]
+# new_data_with_feat_eng = pd.DataFrame(data)
+# percentage_columns = [
+#     'DPRIME',
+#     'Var.DGS30',
+#     'Var.DEXUSEU',
+#     'Var. DEXUSUK',
+#     'Var.VIX',
+#     'Var.Volume S&P500',
+#     'PX_LAST CCMP.1',
+#     'PX_LAST INDU.1',
+#     'px last eurostoxx.2',
+#     'px last footsie.1',
+#     'price nikkei.1',
+#     'price HSI.1',
+#     'price energy.1',
+#     'volume energy.1',
+#     'price information.1',
+#     'volume inform.1',
+#     'health price.1',
+#     'volume health.1',
+#     'price cons.disc.1',
+#     'volume cons.disc',
+#     'price utility',
+#     'vol.utility',
+#     'finant.price',
+#     'vol.finant',
+#     'indust.price',
+#     'vol.industr',
+#     'cons.price',
+#     'volume consum',
+#     'telec.price',
+#     'vol.telec',
+#     'mater.price',
+#     'vol.mater'
+# ]
 
 
-new_data_with_feat_eng = convert_percentage_for_columns(new_data_with_feat_eng, percentage_columns)
+# new_data_with_feat_eng = convert_percentage_for_columns(new_data_with_feat_eng, percentage_columns)
 
-# removendo as datas
-new_data_with_feat_eng.drop(['DATE', 'Date changes DPRIME', 'Calendar.days.without.trade'], axis=1, inplace=True)
+# # removendo as datas
+# new_data_with_feat_eng.drop(['DATE', 'Date changes DPRIME', 'Calendar.days.without.trade'], axis=1, inplace=True)
 
-# remove rows with any values that are not finite
-new_data_with_feat_eng = new_data_with_feat_eng[np.isfinite(new_data_with_feat_eng).all(1)]
+# # remove rows with any values that are not finite
+# new_data_with_feat_eng = new_data_with_feat_eng[np.isfinite(new_data_with_feat_eng).all(1)]
 
-# resultado
-save_pd_as_csv('snp', new_data_with_feat_eng, "with_feature_engineered")
+# # resultado
+# save_pd_as_csv('snp', new_data_with_feat_eng, "with_feature_engineered")
 
-# prepara a variável a usar abaixo
-prepared_dataset = new_data_with_feat_eng
+# # prepara a variável a usar abaixo
+# prepared_dataset = new_data_with_feat_eng
 
 #### end of preparation of dataset (2)
 
-#data_no_outliers = remove_outliers(data)
-#print(f'[!] Original dataset shape: {data.shape}')
-#print(f'[!] Data shape with no outliers: {data_no_outliers.shape}')
+#
+# 1. Data Profiling
+#
+
+check_record_count('snp', prepared_dataset)
+check_dataframe_types('snp', prepared_dataset)
+check_variable_types('snp', prepared_dataset)
+check_missing_values(prepared_dataset)
+generate_granularity_single('snp', prepared_dataset)
+granularity_study_bins('snp', prepared_dataset)
+generate_boxplots('snp', prepared_dataset)
+generate_outliers_plot('snp', prepared_dataset)
+generate_sparsity_study('snp', prepared_dataset)
+generate_textual_correlation_table('snp', prepared_dataset)
+generate_correlation_heatmap('snp', prepared_dataset)
+
+#data_no_outliers = remove_outliers(prepared_dataset)
+#print(f'[!] Original dataset shape: {prepared_dataset.shape}')
+#print(f'[!] Data shape with no outliers: {prepared_dataset.shape}')
 
 normalized_data_zscore = perform_standard_scaling('snp', prepared_dataset)
 save_pd_as_csv('snp', normalized_data_zscore.describe(), "describe_normalized_zenscore")
