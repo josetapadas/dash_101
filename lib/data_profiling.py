@@ -216,7 +216,7 @@ def generate_textual_correlation_table(dataset, data):
     print('[+] Generating the textual correlation table...')
     corr_mtx = abs(data.corr())
     corr_mtx.style.background_gradient(cmap='coolwarm')
-    corr_mtx.to_excel(f'./output/{dataset}/tables/textual_correlation_table.xlsx', engine='openpyxl', index=False)
+    corr_mtx.to_excel(f'./output/{dataset}/tables/{generate_timestamp()}textual_correlation_table.xlsx', engine='openpyxl', index=False)
 
 def generate_correlation_heatmap(dataset, data):
     corr_mtx = abs(data.corr())
