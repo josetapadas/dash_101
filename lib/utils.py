@@ -37,8 +37,17 @@ def drop_columns_at_position(data, array_of_indices):
 
 def convert_percentage_for_column(data, col):
     df = pd.DataFrame(data)
-    df[col] = df[col].str.rstrip('%').astype('float64') / 100.00
+    df[col] = df[col].str.replace(' ','')
+    df[col] = df[col].str.replace('%','').astype('float') / 100.0
     pd.to_numeric(df[col], errors='coerce')
+    return df
+
+def convert_percentage_for_columns(data, columns):
+    df = pd.DataFrame(data)
+
+    for current_column in columns:
+        df = convert_percentage_for_column(df, current_column)
+    
     return df
 
 def clean_empty_excel_value(data, col, dirty_value):

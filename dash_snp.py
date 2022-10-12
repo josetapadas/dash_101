@@ -24,7 +24,7 @@ register_matplotlib_converters()
 
 print("[!] Loading the dataset...")
 
-missing_values = ["NA", "n/a", "na", "?", "--"]
+missing_values = ["NA", "n/a", "na", "?", "--", "#VALUE!"]
 data = pd.read_csv('./datasets/snp.csv', sep=',', decimal='.', parse_dates=True, infer_datetime_format=True, na_values = missing_values)
 save_pd_as_csv('snp', data, 'describe')
 
@@ -52,28 +52,91 @@ save_pd_as_csv('snp', data, 'describe')
 # 1) dataset sem feature engineering
 #
 
-new_data_no_feat_eng = pd.DataFrame(data)
-new_data_no_feat_eng.drop(new_data_no_feat_eng.iloc[:, 56:], inplace=True, axis=1)
+# new_data_no_feat_eng = pd.DataFrame(data)
+# new_data_no_feat_eng.drop(new_data_no_feat_eng.iloc[:, 56:], inplace=True, axis=1)
 
-# removendo algumas percentagens
-new_data_no_feat_eng = clean_empty_excel_value(new_data_no_feat_eng, 'DPRIME', '#VALUE!')
-new_data_no_feat_eng = convert_percentage_for_column(new_data_no_feat_eng, 'DPRIME')
+# # removendo algumas percentagens
+# new_data_no_feat_eng = clean_empty_excel_value(new_data_no_feat_eng, 'DPRIME', '#VALUE!')
+# new_data_no_feat_eng = convert_percentage_for_column(new_data_no_feat_eng, 'DPRIME')
 
-# removendo a data
-new_data_no_feat_eng = drop_column_at_position(new_data_no_feat_eng, 2)
+# # removendo a data
+# new_data_with_feat_eng.drop(['DATE'], axis=1, inplace=True)
+
+
+# # resultado
+# save_pd_as_csv('snp', new_data_no_feat_eng, "no_feature_engineered")
+
+# prepara a variável a usar abaixo
+# prepared_dataset = new_data_no_feat_eng
+
+#### end of preparation of dataset (1)
+
+#
+# 2) dataset com feature engineering
+#
+
+new_data_with_feat_eng = pd.DataFrame(data)
+percentage_columns = [
+    'DPRIME',
+    'Var.DGS30',
+    'Var.DEXUSEU',
+    'Var. DEXUSUK',
+    'Var.VIX',
+    'Var.Volume S&P500',
+    'PX_LAST CCMP.1',
+    'PX_LAST INDU.1',
+    'px last eurostoxx.2',
+    'px last footsie.1',
+    'price nikkei.1',
+    'price HSI.1',
+    'price energy.1',
+    'volume energy.1',
+    'price information.1',
+    'volume inform.1',
+    'health price.1',
+    'volume health.1',
+    'price cons.disc.1',
+    'volume cons.disc',
+    'price utility',
+    'vol.utility',
+    'finant.price',
+    'vol.finant',
+    'indust.price',
+    'vol.industr',
+    'cons.price',
+    'volume consum',
+    'telec.price',
+    'vol.telec',
+    'mater.price',
+    'vol.mater'
+]
+
+
+new_data_with_feat_eng = convert_percentage_for_columns(new_data_with_feat_eng, percentage_columns)
+
+# removendo as datas
+new_data_with_feat_eng.drop(['DATE', 'Date changes DPRIME', 'Calendar.days.without.trade'], axis=1, inplace=True)
+
+# remove rows with any values that are not finite
+new_data_with_feat_eng = new_data_with_feat_eng[np.isfinite(new_data_with_feat_eng).all(1)]
 
 # resultado
-save_pd_as_csv('snp', new_data_no_feat_eng, "no_feature_engineered")
+save_pd_as_csv('snp', new_data_with_feat_eng, "with_feature_engineered")
 
+# prepara a variável a usar abaixo
+prepared_dataset = new_data_with_feat_eng
+
+#### end of preparation of dataset (2)
 
 #data_no_outliers = remove_outliers(data)
 #print(f'[!] Original dataset shape: {data.shape}')
 #print(f'[!] Data shape with no outliers: {data_no_outliers.shape}')
 
-normalized_data_zscore = perform_standard_scaling('snp', new_data_no_feat_eng)
+normalized_data_zscore = perform_standard_scaling('snp', prepared_dataset)
 save_pd_as_csv('snp', normalized_data_zscore.describe(), "describe_normalized_zenscore")
 
-normalized_data_minmax = perform_minmax_scaling('snp', normalized_data_zscore)
+normalized_data_minmax = perform_minmax_scaling('snp', prepared_dataset)
+
 # restora a coluna 'UPDOWN_SnP' do dataset original
 normalized_data_minmax['UPDOWN_SnP'] = data['UPDOWN_SnP']
 
@@ -94,14 +157,14 @@ undersampled_data = perform_undersample('snp', normalized_data_zscore, 'UPDOWN_S
 oversampled_data = perform_oversample('snp', normalized_data_zscore, 'UPDOWN_SnP')
 smote_data = perform_smote('snp', normalized_data_zscore, 'UPDOWN_SnP')
 
-equal_width_data = equal_width_descretization('snp', new_data_no_feat_eng)
-equal_freq_data = equal_frequency_descretization('snp', new_data_no_feat_eng)
+equal_width_data = equal_width_descretization('snp', prepared_dataset)
+equal_freq_data = equal_frequency_descretization('snp', prepared_dataset)
 
 #
 # split training and test sets
 #
 
-split_train_test_sets('snp', new_data_no_feat_eng, 'snp', 'UPDOWN_SnP')
+split_train_test_sets('snp', prepared_dataset, 'snp', 'UPDOWN_SnP')
 
 #
 # classification
