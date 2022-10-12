@@ -41,8 +41,8 @@ new_data_no_feat_eng = pd.DataFrame(data)
 new_data_no_feat_eng.drop(new_data_no_feat_eng.iloc[:, 56:], inplace=True, axis=1)
 
 # removendo algumas percentagens
-new_data_no_feat_eng = clean_empty_excel_value(new_data_no_feat_eng, 'DPRIME', '#VALUE!')
-new_data_no_feat_eng = convert_percentage_for_column(new_data_no_feat_eng, 'DPRIME')
+# new_data_no_feat_eng = clean_empty_excel_value(new_data_no_feat_eng, 'DPRIME', '#VALUE!')
+# new_data_no_feat_eng = convert_percentage_for_column(new_data_no_feat_eng, 'DPRIME')
 
 # removendo a data
 new_data_no_feat_eng.drop(['DATE'], axis=1, inplace=True)
