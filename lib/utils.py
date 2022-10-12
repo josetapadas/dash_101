@@ -1,5 +1,6 @@
 from datetime import datetime
 from matplotlib.pyplot import savefig
+import pandas as pd
 
 def generate_timestamp():
     now = datetime.now() # current date and time
@@ -34,3 +35,13 @@ def drop_columns_at_position(data, array_of_indices):
     new_data.drop(new_data.columns[array_of_indices], axis = 1, inplace = True)
     return new_data
 
+def convert_percentage_for_column(data, col):
+    df = pd.DataFrame(data)
+    df[col] = df[col].str.rstrip('%')
+    pd.to_numeric(df[col], errors='coerce')
+    return df
+
+def clean_empty_excel_value(data, col, dirty_value):
+    df = pd.DataFrame(data)
+    df = df[df[col].str.contains(dirty_value)==False]
+    return df

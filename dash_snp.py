@@ -32,27 +32,42 @@ save_pd_as_csv('snp', data, 'describe')
 # 1. Data Prifiling
 #
 
-check_record_count('snp', data)
-check_dataframe_types('snp', data)
-check_variable_types('snp', data)
-check_missing_values(data)
-generate_granularity_single('snp', data)
-granularity_study_bins('snp', data)
-generate_boxplots('snp', data)
-generate_outliers_plot('snp', data)
-generate_sparsity_study('snp', data)
-generate_textual_correlation_table('snp', data)
-generate_correlation_heatmap('snp', data)
+# check_record_count('snp', data)
+# check_dataframe_types('snp', data)
+# check_variable_types('snp', data)
+# check_missing_values(data)
+# generate_granularity_single('snp', data)
+# granularity_study_bins('snp', data)
+# generate_boxplots('snp', data)
+# generate_outliers_plot('snp', data)
+# generate_sparsity_study('snp', data)
+# generate_textual_correlation_table('snp', data)
+# generate_correlation_heatmap('snp', data)
 
 #
 # Data preparation
 #
 
+# dataset sem feature engineering
+new_data_no_feat_eng = pd.DataFrame(data)
+new_data_no_feat_eng.drop(new_data_no_feat_eng.iloc[:, 56:], inplace=True, axis=1)
+
+# removendo algumas percentagens
+new_data_no_feat_eng = clean_empty_excel_value(new_data_no_feat_eng, 'DPRIME', '#VALUE!')
+new_data_no_feat_eng = convert_percentage_for_column(new_data_no_feat_eng, 'DPRIME')
+
+# removendo a data
+new_data_no_feat_eng = drop_column_at_position(new_data_no_feat_eng, 2)
+
+# resultado
+save_pd_as_csv('snp', new_data_no_feat_eng, "no_feature_engineered")
+
+
 #data_no_outliers = remove_outliers(data)
 #print(f'[!] Original dataset shape: {data.shape}')
 #print(f'[!] Data shape with no outliers: {data_no_outliers.shape}')
 
-normalized_data_zscore = perform_standard_scaling('snp', data)
+normalized_data_zscore = perform_standard_scaling('snp', new_data_no_feat_eng)
 save_pd_as_csv('snp', normalized_data_zscore.describe(), "describe_normalized_zenscore")
 
 normalized_data_minmax = perform_minmax_scaling('snp', normalized_data_zscore)
@@ -76,14 +91,14 @@ undersampled_data = perform_undersample('snp', normalized_data_zscore, 'UPDOWN_S
 oversampled_data = perform_oversample('snp', normalized_data_zscore, 'UPDOWN_SnP')
 smote_data = perform_smote('snp', normalized_data_zscore, 'UPDOWN_SnP')
 
-equal_width_data = equal_width_descretization('snp', data)
-equal_freq_data = equal_frequency_descretization('snp', data)
+equal_width_data = equal_width_descretization('snp', new_data_no_feat_eng)
+equal_freq_data = equal_frequency_descretization('snp', new_data_no_feat_eng)
 
 #
 # split training and test sets
 #
 
-split_train_test_sets('snp', data, 'snp', 'UPDOWN_SnP')
+split_train_test_sets('snp', new_data_no_feat_eng, 'snp', 'UPDOWN_SnP')
 
 #
 # classification
