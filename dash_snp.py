@@ -48,7 +48,10 @@ save_pd_as_csv('snp', data, 'describe')
 # Data preparation
 #
 
-# dataset sem feature engineering
+#
+# 1) dataset sem feature engineering
+#
+
 new_data_no_feat_eng = pd.DataFrame(data)
 new_data_no_feat_eng.drop(new_data_no_feat_eng.iloc[:, 56:], inplace=True, axis=1)
 
@@ -108,5 +111,7 @@ perform_naive_bayes_analysis('snp', 'UPDOWN_SnP')
 perform_knn_analysis('snp', 'UPDOWN_SnP')
 #perform_decision_trees_analysis('snp', 'UPDOWN_SnP')
 #perform_random_forest_analysis('snp', 'UPDOWN_SnP')
+perform_multi_layer_perceptrons('snp', 'UPDOWN_SnP')
+perform_gradient_boosting('snp', 'UPDOWN_SnP')
 
 print("[!] Done :)")

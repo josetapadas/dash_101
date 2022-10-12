@@ -37,7 +37,7 @@ def drop_columns_at_position(data, array_of_indices):
 
 def convert_percentage_for_column(data, col):
     df = pd.DataFrame(data)
-    df[col] = df[col].str.rstrip('%')
+    df[col] = df[col].str.rstrip('%').astype('float64') / 100.00
     pd.to_numeric(df[col], errors='coerce')
     return df
 
