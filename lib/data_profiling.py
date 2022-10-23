@@ -224,7 +224,9 @@ def generate_textual_correlation_table(dataset, data):
 
 def generate_correlation_heatmap(dataset, data):
     corr_mtx = abs(data.corr())
-    fig = figure(figsize=[120, 120])
-    heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns, yticklabels=corr_mtx.columns, annot=True, cmap='Blues')
+    fig = figure(figsize=[38, 38])
+    fig.tight_layout(pad=0)
+#    heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns, yticklabels=corr_mtx.columns, annot=True, cmap='Blues')
+    heatmap(abs(corr_mtx), xticklabels=corr_mtx.columns, yticklabels=corr_mtx.columns, cmap='Blues')
     title('Correlation analysis')
     save_image(dataset, f'{dataset}_rf_ranking')
