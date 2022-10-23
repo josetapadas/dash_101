@@ -1,5 +1,5 @@
 from lib.config.ds_charts import bar_chart, get_variable_types, HEIGHT
-from matplotlib.pyplot import figure, subplots, title
+from matplotlib.pyplot import figure, subplots, subplots_adjust, tight_layout, title
 from seaborn import heatmap
 from lib.utils import *
 import numpy as np
@@ -203,11 +203,14 @@ def generate_sparsity_study(dataset, data):
     rows, cols = len(numeric_vars)-1, len(numeric_vars)-1
     figure()
     fig, axs = subplots(rows, cols, figsize=(cols * HEIGHT/2, rows *HEIGHT/2), squeeze=False)
+# using padding to allow space for the names of variables not to cross from a graph to the next        
+    fig.tight_layout(pad=3.0)
     for i in range(len(numeric_vars)):
         var1 = numeric_vars[i]
         for j in range(i+1, len(numeric_vars)):
             var2 = numeric_vars[j]
-            axs[i, j-1].set_title("%s x %s"%(var1,var2))
+#            axs[i, j-1].set_title("%s x %s"%(var1,var2))
+            axs[i, j-1].set_title("x(X%d) x y(X%d)"%((i+2),(j+2)))
             axs[i, j-1].set_xlabel(var1)
             axs[i, j-1].set_ylabel(var2)
             axs[i, j-1].scatter(data[var1], data[var2])
