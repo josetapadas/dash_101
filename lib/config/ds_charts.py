@@ -77,6 +77,8 @@ def multiple_line_chart(xvalues: list, yvalues: dict, ax: plt.Axes = None, title
     set_locators(xvalues, ax=ax, rotation=rotation)
     legend: list = []
     for name, y in yvalues.items():
+# parâmetro para limitar os valores representados no eixo do y
+        ax.set_ylim([0.9, 1])
         ax.plot(xvalues, y)
         legend.append(name)
     ax.legend(legend)

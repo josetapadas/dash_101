@@ -35,7 +35,7 @@ def perform_minmax_scaling(dataset, data):
     df_sb = data[symbolic_vars]
     df_bool = data[boolean_vars]
 
-    transf = MinMaxScaler(feature_range=(0, 1), copy=True).fit(df_nr)
+    transf = MinMaxScaler(feature_range=(0, 100), copy=True).fit(df_nr)
     tmp = DataFrame(transf.transform(df_nr), index=data.index, columns= numeric_vars)
     norm_data_minmax = concat([tmp, df_sb,  df_bool], axis=1)
     save_pd_as_csv(dataset, norm_data_minmax, 'scaled_minimax', False)
