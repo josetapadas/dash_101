@@ -48,16 +48,21 @@ save_pd_as_csv('taiwan', data, 'describe')
 # Data preparation
 #
 
+# remove list of variables
+columns_to_drop = np.array([ 7, 8, 9, 10, 11, 15, 22, 25, 26, 27, 28, 29, 31, 32, 34, 35, 37, 42, 47, 48, 52, 54, 59, 60, 63, 64, 68, 70, 72, 74, 76, 77, 88, 89, 93, 94 , 95 ])
+data_subset = drop_column_at_position(data, columns_to_drop)
+save_pd_as_csv('taiwan', data_subset, "data_subset")
+
 # data_no_outliers = remove_outliers(data)
 # print(f'[!] Original dataset shape: {data.shape}')
 # print(f'[!] Data shape with no outliers: {data_no_outliers.shape}')
 
-# normalized_data_zscore = perform_standard_scaling('taiwan', data)
+normalized_data_zscore = perform_standard_scaling('taiwan', data_subset)
 # save_pd_as_csv('taiwan', normalized_data_zscore.describe(), "describe_normalized_zenscore")
 
-# normalized_data_minmax = perform_minmax_scaling('taiwan', normalized_data_zscore)
+#normalized_data_minmax = perform_minmax_scaling('taiwan', normalized_data_zscore)
 # # # restora a coluna 'Bankrupt?' do dataset original
-# normalized_data_minmax['Bankrupt?'] = data['Bankrupt?']
+#normalized_data_minmax['Bankrupt?'] = data['Bankrupt?']
 # save_pd_as_csv('taiwan', normalized_data_minmax.describe(), "describe_normalized_minmax")
 
 #generating plot for comparing the normalization algorithms
@@ -73,7 +78,7 @@ save_pd_as_csv('taiwan', data, 'describe')
 # check_data_balancing('taiwan', normalized_data_zscore, 'Bankrupt?')
 # undersampled_data = perform_undersample('taiwan', normalized_data_zscore, 'Bankrupt?')
 # oversampled_data = perform_oversample('taiwan', normalized_data_zscore, 'Bankrupt?')
-# smote_data = perform_smote('taiwan', normalized_data_zscore, 'Bankrupt?')
+smote_data = perform_smote('taiwan', normalized_data_zscore, 'Bankrupt?')
 
 # equal_width_data = equal_width_descretization('taiwan', data)
 # equal_freq_data = equal_frequency_descretization('taiwan', data)
@@ -82,17 +87,17 @@ save_pd_as_csv('taiwan', data, 'describe')
 # split training and test sets
 #
 
-# split_train_test_sets('taiwan', data, 'taiwan', 'Bankrupt?')
+split_train_test_sets('taiwan', smote_data, 'taiwan', 'Bankrupt?')
 
 #
 # classification
 #
 
-# perform_naive_bayes_analysis('taiwan', 'Bankrupt?')
-# perform_knn_analysis('taiwan', 'Bankrupt?')
+perform_naive_bayes_analysis('taiwan', 'Bankrupt?')
+#perform_knn_analysis('taiwan', 'Bankrupt?')
 #perform_decision_trees_analysis('taiwan', 'Bankrupt?')
 #perform_random_forest_analysis('taiwan', 'Bankrupt?')
-perform_multi_layer_perceptrons('taiwan', 'Bankrupt?')
-perform_gradient_boosting('taiwan', 'Bankrupt?')
+#perform_multi_layer_perceptrons('taiwan', 'Bankrupt?')
+#perform_gradient_boosting('taiwan', 'Bankrupt?')
 
 print("[!] Done :)")
