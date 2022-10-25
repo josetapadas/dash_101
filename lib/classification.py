@@ -65,9 +65,9 @@ def perform_naive_bayes_analysis(file_tag, target):
     ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
     save_image(file_tag, f'{file_tag}_nb_best_gaussian')
     estimators = {'GaussianNB': GaussianNB(),
-              #'MultinomialNB': MultinomialNB(),
+              'MultinomialNB': MultinomialNB(),
               'BernoulliNB': BernoulliNB()
-              #'CategoricalNB': CategoricalNB
+#              'CategoricalNB': CategoricalNB
               }
 
     xvalues = []
