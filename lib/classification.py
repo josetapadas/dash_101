@@ -1,5 +1,5 @@
 import numpy as np
-from pandas import read_csv, concat, unique, DataFrame
+from pandas import isnull, read_csv, concat, unique, DataFrame
 import matplotlib.pyplot as plt
 import lib.config.ds_charts as ds
 from sklearn.model_selection import train_test_split
@@ -12,7 +12,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 
-from lib.utils import save_image
+from lib.utils import save_image, save_pd_as_csv
 
 def split_train_test_sets(dataset, data, file_tag, target, positive = 1, negative = 0):
     print('[+] Splitting the dataset into training and testing subsets')
@@ -37,6 +37,12 @@ def split_train_test_sets(dataset, data, file_tag, target, positive = 1, negativ
     ds.multiple_bar_chart([positive, negative], values, title='Data distribution per dataset')
     save_image(dataset, 'data_distributions_per_dataset')
 
+def clean_dataset(df):
+    assert isinstance(df, DataFrame), "df needs to be a pd.DataFrame"
+    df.dropna(inplace=True)
+    indices_to_keep = ~df.isin([np.nan, np.inf, -np.inf]).any(1)
+    return df[indices_to_keep].astype(np.float64)
+
 def perform_naive_bayes_analysis(file_tag, target):
     print('[+] Performing Naive Bayes analysis')
 
@@ -45,12 +51,13 @@ def perform_naive_bayes_analysis(file_tag, target):
     trnX: np.ndarray = train.values
     labels = unique(trnY)
     labels.sort()
+    save_pd_as_csv("snp", isnull(train).sum() > 0, "empty_values")
 
     test: DataFrame = read_csv(f'datasets/{file_tag}_test.csv')
     tstY: np.ndarray = test.pop(target).values
     tstX: np.ndarray = test.values
 
-    clf = GaussianNB()
+    clf = BernoulliNB()
     clf.fit(trnX, trnY)
     prd_trn = clf.predict(trnX)
     prd_tst = clf.predict(tstX)
