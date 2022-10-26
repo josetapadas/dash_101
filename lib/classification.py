@@ -219,9 +219,9 @@ def perform_decision_trees_analysis(file_tag, target):
         imp_values += [importances[indices[f]]]
         print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
 
-    figure()
+    figure(figsize=(10, 20))
     ds.horizontal_bar_chart(elems, imp_values, error=None, title='Decision Tree Features importance', xlabel='importance', ylabel='variables')
-    save_image(file_tag, f'{file_tag}_dt_ranking.png')
+    save_image(file_tag, f'{file_tag}_dt_ranking')
 
     imp = 0.0001
     f = 'entropy'
@@ -301,7 +301,7 @@ def perform_random_forest_analysis(file_tag, target):
         elems += [variables[indices[f]]]
         print(f'{f+1}. feature {elems[f]} ({importances[indices[f]]})')
 
-    figure()
+    figure(figsize=(10, 20))
     ds.horizontal_bar_chart(elems, importances[indices], stdevs[indices], title='Random Forest Features importance', xlabel='importance', ylabel='variables')
     save_image(file_tag, f'{file_tag}_rf_ranking')
 

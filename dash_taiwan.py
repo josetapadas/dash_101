@@ -37,7 +37,7 @@ save_pd_as_csv('taiwan', data, 'describe')
 # check_variable_types('taiwan', data)
 # check_missing_values(data)
 # generate_granularity_single('taiwan', data)
-granularity_study_bins('taiwan', data)
+#granularity_study_bins('taiwan', data)
 #generate_textual_correlation_table('taiwan', data)
 #generate_correlation_heatmap('taiwan', data)
 # generate_boxplots('taiwan', data)
@@ -50,7 +50,7 @@ granularity_study_bins('taiwan', data)
 
 # remove list of variables
 columns_to_drop = np.array([ 7, 8, 9, 10, 11, 15, 22, 25, 26, 27, 28, 29, 31, 32, 34, 35, 37, 42, 47, 48, 52, 54, 59, 60, 63, 64, 68, 70, 72, 74, 76, 77, 88, 89, 93, 94 , 95 ])
-data_subset = drop_column_at_position(data, columns_to_drop)
+data_subset = drop_columns_at_position(data, columns_to_drop)
 save_pd_as_csv('taiwan', data_subset, "data_subset")
 
 # data_no_outliers = remove_outliers(data)
@@ -93,9 +93,9 @@ split_train_test_sets('taiwan', smote_data, 'taiwan', 'Bankrupt?')
 # classification
 #
 
-#perform_naive_bayes_analysis('taiwan', 'Bankrupt?')
+perform_naive_bayes_analysis('taiwan', 'Bankrupt?')
 #perform_knn_analysis('taiwan', 'Bankrupt?')
-# perform_decision_trees_analysis('taiwan', 'Bankrupt?')
+#perform_decision_trees_analysis('taiwan', 'Bankrupt?')
 #perform_random_forest_analysis('taiwan', 'Bankrupt?')
 #perform_multi_layer_perceptrons('taiwan', 'Bankrupt?')
 #perform_gradient_boosting('taiwan', 'Bankrupt?')
