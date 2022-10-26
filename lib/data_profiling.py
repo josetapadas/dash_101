@@ -172,7 +172,7 @@ def remove_outliers_for_feature(feature, feature_name, dataset):
     print('Quartile 25: {} | Quartile 75: {}'.format(q25, q75))
     feat_iqr = q75 - q25
     print('iqr: {}'.format(feat_iqr))
-    
+    # valor do cut-off para retirar os outliers. Originalmente 1.5
     feat_cut_off = feat_iqr * 1.5
     feat_lower, feat_upper = q25 - feat_cut_off, q75 + feat_cut_off
     print('Cut Off: {}'.format(feat_cut_off))

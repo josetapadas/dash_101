@@ -77,6 +77,8 @@ def multiple_line_chart(xvalues: list, yvalues: dict, ax: plt.Axes = None, title
     set_locators(xvalues, ax=ax, rotation=rotation)
     legend: list = []
     for name, y in yvalues.items():
+# parâmetro para limitar os valores representados no eixo do y
+        ax.set_ylim([0.5, 1])
         ax.plot(xvalues, y)
         legend.append(name)
     ax.legend(legend)
@@ -111,7 +113,9 @@ def multiple_bar_chart(xvalues: list, yvalues: dict, ax: plt.Axes = None, title:
             ax.text(pos_group[k], values[k] + TEXT_MARGIN, f'{values[k]:.2f}', ha='center', fontproperties=FONT_TEXT)
         pos_group = pos_group + width
         i += 1
-    ax.legend(legend, fontsize='x-small', title_fontsize='small')
+    # customizar a legenda do gráfico de barras, retirando a caixa à volta (frameon=False), 
+    #                   posicionamento em baixo (loc='lower center'), e em 2 colunas (ncol=2)
+    ax.legend(legend, fontsize='x-small', title_fontsize='small', loc='lower center', ncol=2, fancybox=True, framealpha=1, shadow=True, borderpad=1)
 
 
 def plot_evaluation_results(labels: ndarray, trn_y, prd_trn, tst_y, prd_tst):

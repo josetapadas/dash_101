@@ -133,15 +133,15 @@ prepared_dataset = new_data_no_feat_eng
 #print(f'[!] Original dataset shape: {prepared_dataset.shape}')
 #print(f'[!] Data shape with no outliers: {prepared_dataset.shape}')
 
-# normalized_data_zscore = perform_standard_scaling('snp', prepared_dataset)
-# save_pd_as_csv('snp', normalized_data_zscore.describe(), "describe_normalized_zenscore")
+normalized_data_zscore = perform_standard_scaling('snp', prepared_dataset)
+save_pd_as_csv('snp', normalized_data_zscore.describe(), "describe_normalized_zenscore")
 
-# normalized_data_minmax = perform_minmax_scaling('snp', prepared_dataset)
+#normalized_data_minmax = perform_minmax_scaling('snp', normalized_data_zscore)
 
 # # restora a coluna 'UPDOWN_SnP' do dataset original
-# normalized_data_minmax['UPDOWN_SnP'] = data['UPDOWN_SnP']
+normalized_data_zscore['UPDOWN_SnP'] = data['UPDOWN_SnP']
 
-# save_pd_as_csv('snp', normalized_data_minmax.describe(), "describe_normalized_minmax")
+#save_pd_as_csv('snp', normalized_data_minmax.describe(), "describe_normalized_minmax")
 
 #generating plot for comparing the normalization algorithms
 # fig, axs = subplots(1, 3, figsize=(100,50),squeeze=False)
@@ -153,18 +153,18 @@ prepared_dataset = new_data_no_feat_eng
 # normalized_data_minmax.boxplot(ax=axs[0, 2])
 # save_image('snp', 'boxplot_normalized_data_with_no_outliers')
 
-# check_data_balancing('snp', normalized_data_zscore, 'UPDOWN_SnP')
-# undersampled_data = perform_undersample('snp', normalized_data_zscore, 'UPDOWN_SnP')
-# oversampled_data = perform_oversample('snp', normalized_data_zscore, 'UPDOWN_SnP')
-# smote_data = perform_smote('snp', normalized_data_zscore, 'UPDOWN_SnP')
+##check_data_balancing('snp', normalized_data_minmax, 'UPDOWN_SnP')
+#undersampled_data = perform_undersample('snp', normalized_data_zscore, 'UPDOWN_SnP')
+#oversampled_data = perform_oversample('snp', normalized_data_zscore, 'UPDOWN_SnP')
+smote_data = perform_smote('snp', normalized_data_zscore, 'UPDOWN_SnP')
 
-# equal_width_data = equal_width_descretization('snp', prepared_dataset)
-# equal_freq_data = equal_frequency_descretization('snp', prepared_dataset)
+#equal_width_data = equal_width_descretization('snp', prepared_dataset)
+#equal_freq_data = equal_frequency_descretization('snp', prepared_dataset)
 
 #
 # split training and test sets
 #
-split_train_test_sets('snp', prepared_dataset, 'snp', 'UPDOWN_SnP')
+split_train_test_sets('snp', smote_data, 'snp', 'UPDOWN_SnP')
 
 #
 # classification
