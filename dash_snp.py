@@ -109,7 +109,7 @@ new_data_with_feat_eng = new_data_with_feat_eng[np.isfinite(new_data_with_feat_e
 save_pd_as_csv('snp', new_data_with_feat_eng, "with_feature_engineered")
 
 # prepara a variável a usar abaixo
-prepared_dataset = new_data_with_feat_eng
+prepared_dataset = new_data_no_feat_eng
 
 #### end of preparation of dataset (2)
 
@@ -119,7 +119,7 @@ prepared_dataset = new_data_with_feat_eng
 
 # check_record_count('snp', prepared_dataset)
 # check_dataframe_types('snp', prepared_dataset)
-check_variable_types('snp', prepared_dataset)
+#check_variable_types('snp', prepared_dataset)
 # check_missing_values(prepared_dataset)
 # generate_granularity_single('snp', prepared_dataset)
 # granularity_study_bins('snp', prepared_dataset)
@@ -170,8 +170,8 @@ split_train_test_sets('snp', prepared_dataset, 'snp', 'UPDOWN_SnP')
 # classification
 #
 
-perform_naive_bayes_analysis('snp', 'UPDOWN_SnP')
-# perform_knn_analysis('snp', 'UPDOWN_SnP')
+#perform_naive_bayes_analysis('snp', 'UPDOWN_SnP')
+perform_knn_analysis('snp', 'UPDOWN_SnP')
 #perform_decision_trees_analysis('snp', 'UPDOWN_SnP')
 #perform_random_forest_analysis('snp', 'UPDOWN_SnP')
 # perform_multi_layer_perceptrons('snp', 'UPDOWN_SnP')

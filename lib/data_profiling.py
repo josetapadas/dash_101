@@ -104,8 +104,7 @@ def granularity_study_bins(dataset, data):
                 axs[i, j].hist(data[single_variable].values, bins=bins[j])
                 j += 1
 
-        
-        save_image(dataset, f'granularity_study_g{group_index}')
+            save_image(dataset, f'granularity_study_x{get_variable_number(data, single_variable)}')
            
 def generate_boxplots(dataset, data):
     print('[+] Generating the bloxplots for the dataset')
