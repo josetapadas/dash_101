@@ -7,3 +7,4 @@ imblearn
 xlwt
 jinja2
 openpyxl
+graphviz

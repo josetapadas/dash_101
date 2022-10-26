@@ -3,16 +3,16 @@ from pandas import isnull, read_csv, concat, unique, DataFrame
 import matplotlib.pyplot as plt
 import lib.config.ds_charts as ds
 from sklearn.model_selection import train_test_split
-from matplotlib.pyplot import figure, subplots, Axes, title
+from matplotlib.pyplot import figure, show, subplots, Axes, title
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, CategoricalNB
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.tree import DecisionTreeClassifier, export_graphviz, plot_tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 
-from lib.utils import save_image, save_pd_as_csv
+from lib.utils import generate_timestamp, save_image, save_pd_as_csv
 
 def split_train_test_sets(dataset, data, file_tag, target, positive = 1, negative = 0):
     print('[+] Splitting the dataset into training and testing subsets')
@@ -165,8 +165,7 @@ def perform_decision_trees_analysis(file_tag, target):
     last_best = 0
     best_model = None
 
-    figure()
-    fig, axs = subplots(1, 2, figsize=(16, 4), squeeze=False)
+    fig, axs = subplots(1, 2, squeeze=False)
     for k in range(len(criteria)):
         f = criteria[k]
         values = {}
@@ -189,16 +188,26 @@ def perform_decision_trees_analysis(file_tag, target):
 
         print('[!] Best results achieved with %s criteria, depth=%d and min_impurity_decrease=%1.2f ==> accuracy=%1.2f'%(best[0], best[1], best[2], last_best))
 
-    figure(figsize=(100,100))
     label_values = [str(value) for value in labels]
-    plot_tree(best_model, feature_names=train.columns, class_names=label_values)
-    save_image(file_tag, f'{file_tag}_dt_best_tree')
+    #plot_tree(best_model, feature_names=train.columns, class_names=label_values)
+    #save_image(file_tag, f'{file_tag}_dt_best_tree')
 
-    figure()
     prd_trn = best_model.predict(trnX)
     prd_tst = best_model.predict(tstX)
     ds.plot_evaluation_results(labels, trnY, prd_trn, tstY, prd_tst)
     save_image(file_tag, f'{file_tag}_dt_best')
+
+    import graphviz
+    # DOT data
+    dot_data = export_graphviz(best_model, out_file=None, 
+                                    feature_names=train.columns,  
+                                    class_names=label_values,
+                                    filled=True)
+
+    graph = graphviz.Source(dot_data, format="png")
+    filename = f'./output/{file_tag}/images/{generate_timestamp()}__best_decision_tree'
+    print(f'[+] saving {filename} image as png...') 
+    graph.render(filename)
 
     variables = train.columns
     importances = best_model.feature_importances_
