@@ -49,7 +49,16 @@ save_pd_as_csv('taiwan', data, 'describe')
 #
 
 # remove list of variables
-columns_to_drop = np.array([ 7, 8, 9, 10, 11, 15, 22, 25, 26, 27, 28, 29, 31, 32, 34, 35, 37, 42, 47, 48, 52, 54, 59, 60, 63, 64, 68, 70, 72, 74, 76, 77, 88, 89, 93, 94 , 95 ])
+#columns_to_drop = []  // choose this line if do not wish to remove any variable from the analysis
+# Features to remove due to IRRELEVANCE
+#columns_to_drop = np.array([ 6, 7, 8, 9, 10, 14, 21, 24, 25, 26, 27, 28, 30, 31, 33, 34, 36, 41, 46, 47, 51, 53, 58, 59, 62, 63, 67, 69, 71, 73, 75, 76, 87, 88, 92, 93 , 94 ])
+# Features to remove due to REDUNDANCY
+#columns_to_drop = np.array([ 2, 3, 5, 8, 10, 17, 18, 23, 27, 38, 42, 43, 61, 66, 77, 88, 90 ])
+# Features to remove due to IRRELEVANCE + REDUNDANCY
+columns_to_drop = np.array([ 2, 3, 5, 6, 7, 8, 9, 10, 14, 17, 18, 21, 23, 24, 25, 26, 27, 28, 30, 31, 
+                            33, 34, 36, 38, 41, 42, 43, 46, 47, 51, 53, 58, 59, 61, 62, 63, 66, 67, 
+                            69, 71, 73, 75, 76, 77, 87, 88, 90, 92, 93 , 94 ])
+
 data_subset = drop_columns_at_position(data, columns_to_drop)
 save_pd_as_csv('taiwan', data_subset, "data_subset")
 
@@ -60,10 +69,10 @@ save_pd_as_csv('taiwan', data_subset, "data_subset")
 normalized_data_zscore = perform_standard_scaling('taiwan', data_subset)
 # save_pd_as_csv('taiwan', normalized_data_zscore.describe(), "describe_normalized_zenscore")
 
-#normalized_data_minmax = perform_minmax_scaling('taiwan', normalized_data_zscore)
+normalized_data_minmax = perform_minmax_scaling('taiwan', normalized_data_zscore)
 # # # restora a coluna 'Bankrupt?' do dataset original
 #normalized_data_minmax['Bankrupt?'] = data['Bankrupt?']
-# save_pd_as_csv('taiwan', normalized_data_minmax.describe(), "describe_normalized_minmax")
+#save_pd_as_csv('taiwan', normalized_data_minmax.describe(), "describe_normalized_minmax")
 
 #generating plot for comparing the normalization algorithms
 # fig, axs = subplots(1, 3, figsize=(100,50),squeeze=False)
@@ -93,11 +102,11 @@ split_train_test_sets('taiwan', smote_data, 'taiwan', 'Bankrupt?')
 # classification
 #
 
-perform_naive_bayes_analysis('taiwan', 'Bankrupt?')
-#perform_knn_analysis('taiwan', 'Bankrupt?')
-#perform_decision_trees_analysis('taiwan', 'Bankrupt?')
-#perform_random_forest_analysis('taiwan', 'Bankrupt?')
-#perform_multi_layer_perceptrons('taiwan', 'Bankrupt?')
-#perform_gradient_boosting('taiwan', 'Bankrupt?')
+# perform_naive_bayes_analysis('taiwan', 'Bankrupt?')
+# perform_knn_analysis('taiwan', 'Bankrupt?')
+perform_decision_trees_analysis('taiwan', 'Bankrupt?')
+perform_random_forest_analysis('taiwan', 'Bankrupt?')
+perform_multi_layer_perceptrons('taiwan', 'Bankrupt?')
+perform_gradient_boosting('taiwan', 'Bankrupt?')
 
 print("[!] Done :)")
